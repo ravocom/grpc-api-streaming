@@ -1,0 +1,21 @@
+syntax ="proto3";
+
+package inventory;
+
+option java_package="com.rimaz.inventory";
+option java_multiple_files = true;
+
+message InventoryRequest{
+    int32 flight_id = 1;
+}
+
+message InventoryResponse{
+    int32 allocation =1;
+    string result=2;
+}
+
+service InventoryService{
+    rpc InventoryUnary ( InventoryRequest) returns (InventoryResponse) {};
+    rpc InventoryClientStream (stream InventoryRequest) returns (InventoryResponse) {};
+    rpc InventoryServerStream ( InventoryRequest) returns (stream InventoryResponse) {};
+}
