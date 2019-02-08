@@ -7,6 +7,7 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.stub.StreamObserver;
 
+import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -27,9 +28,9 @@ public class ClientShopper {
         doUnary(channel);
         doClientStreaming(channel);
         doServerStreaming(channel);
+        doBidectionalStreaming(channel);
         channel.shutdown();
     }
-
 
     private void doUnary(ManagedChannel channel) {
 
@@ -96,5 +97,42 @@ public class ClientShopper {
             System.out.println("Response Received at client: Allocation=" + inventoryResponse.getAllocation() + ", Result=" + inventoryResponse.getResult());
         });
 
+    }
+
+
+    private void doBidectionalStreaming(ManagedChannel channel) {
+        InventoryServiceGrpc.InventoryServiceStub asynStub = InventoryServiceGrpc.newStub(channel);
+        CountDownLatch latch = new CountDownLatch(1);
+
+        System.out.println("************ Bidrectional Streaming ******************");
+
+        StreamObserver<InventoryRequest> inventoryRequests=   asynStub.inventoryBidirectionalStream(new StreamObserver<InventoryResponse>() {
+            @Override
+            public void onNext(InventoryResponse value) {
+                System.out.println("Response received from the server: " + value.getResult() + ", Allocation=" + value.getAllocation());
+            }
+
+            @Override
+            public void onError(Throwable t) {
+                latch.countDown();
+                System.out.println("Error on receiving the response from the server" + t);
+            }
+
+            @Override
+            public void onCompleted() {
+                latch.countDown();
+                System.out.println("Server has concluded sending responses");
+            }
+        });
+
+        Arrays.asList(120, 213,234,23,23423,234234,23423,234).forEach(flightId -> {
+            inventoryRequests.onNext(InventoryRequest.newBuilder().setFlightId(flightId).build());
+        });
+
+        try {
+            latch.await(3, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

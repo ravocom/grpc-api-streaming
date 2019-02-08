@@ -1,6 +1,5 @@
 package com.rimaz.grpc.server;
 
-import com.rimaz.inventory.Inventory;
 import com.rimaz.inventory.InventoryRequest;
 import com.rimaz.inventory.InventoryResponse;
 import com.rimaz.inventory.InventoryServiceGrpc;
@@ -21,7 +20,8 @@ public class ShopperServiceImpl extends InventoryServiceGrpc.InventoryServiceImp
 
         StreamObserver<InventoryRequest> requestStreamObserver = new StreamObserver<InventoryRequest>() {
 
-            String result ="";
+            String result = "";
+
             @Override
             public void onNext(InventoryRequest value) {
                 System.out.println("Client sends a message");
@@ -51,9 +51,32 @@ public class ShopperServiceImpl extends InventoryServiceGrpc.InventoryServiceImp
 
     @Override
     public void inventoryServerStream(InventoryRequest request, StreamObserver<InventoryResponse> responseObserver) {
-       int flightId = request.getFlightId();
+        int flightId = request.getFlightId();
 
-       responseObserver.onNext(InventoryResponse.newBuilder().setAllocation(490).setResult("Server Stream").build());
-       responseObserver.onCompleted();
+        responseObserver.onNext(InventoryResponse.newBuilder().setAllocation(490).setResult("Server Stream").build());
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public StreamObserver<InventoryRequest> inventoryBidirectionalStream(StreamObserver<InventoryResponse> responseObserver) {
+
+        StreamObserver<InventoryRequest> requestStreamObserver = new StreamObserver<InventoryRequest>() {
+            @Override
+            public void onNext(InventoryRequest value) {
+                responseObserver.onNext(InventoryResponse.newBuilder().setResult("Result of Flight Id=" + value.getFlightId()).setAllocation(20).build());
+            }
+
+            @Override
+            public void onError(Throwable t) {
+                System.out.println("Error in bidrectional service impl" + t);
+            }
+
+            @Override
+            public void onCompleted() {
+                responseObserver.onCompleted();
+            }
+        };
+
+        return requestStreamObserver;
     }
 }

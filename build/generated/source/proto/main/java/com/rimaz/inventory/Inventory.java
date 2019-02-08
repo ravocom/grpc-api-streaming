@@ -36,15 +36,17 @@ public final class Inventory {
       "\n\031inventory/inventory.proto\022\tinventory\"%" +
       "\n\020InventoryRequest\022\021\n\tflight_id\030\001 \001(\005\"7\n" +
       "\021InventoryResponse\022\022\n\nallocation\030\001 \001(\005\022\016" +
-      "\n\006result\030\002 \001(\t2\221\002\n\020InventoryService\022M\n\016I" +
+      "\n\006result\030\002 \001(\t2\362\002\n\020InventoryService\022M\n\016I" +
       "nventoryUnary\022\033.inventory.InventoryReque" +
       "st\032\034.inventory.InventoryResponse\"\000\022V\n\025In" +
       "ventoryClientStream\022\033.inventory.Inventor" +
       "yRequest\032\034.inventory.InventoryResponse\"\000" +
       "(\001\022V\n\025InventoryServerStream\022\033.inventory." +
       "InventoryRequest\032\034.inventory.InventoryRe" +
-      "sponse\"\0000\001B\027\n\023com.rimaz.inventoryP\001b\006pro" +
-      "to3"
+      "sponse\"\0000\001\022_\n\034InventoryBidirectionalStre" +
+      "am\022\033.inventory.InventoryRequest\032\034.invent" +
+      "ory.InventoryResponse\"\000(\0010\001B\027\n\023com.rimaz" +
+      ".inventoryP\001b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {

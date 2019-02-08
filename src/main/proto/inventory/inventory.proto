@@ -14,8 +14,10 @@ message InventoryResponse{
     string result=2;
 }
 
+
 service InventoryService{
     rpc InventoryUnary ( InventoryRequest) returns (InventoryResponse) {};
     rpc InventoryClientStream (stream InventoryRequest) returns (InventoryResponse) {};
     rpc InventoryServerStream ( InventoryRequest) returns (stream InventoryResponse) {};
+    rpc InventoryBidirectionalStream (stream InventoryRequest) returns (stream InventoryResponse) {};
 }

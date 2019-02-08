@@ -123,6 +123,38 @@ public final class InventoryServiceGrpc {
      return getInventoryServerStreamMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<com.rimaz.inventory.InventoryRequest,
+      com.rimaz.inventory.InventoryResponse> getInventoryBidirectionalStreamMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "InventoryBidirectionalStream",
+      requestType = com.rimaz.inventory.InventoryRequest.class,
+      responseType = com.rimaz.inventory.InventoryResponse.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.BIDI_STREAMING)
+  public static io.grpc.MethodDescriptor<com.rimaz.inventory.InventoryRequest,
+      com.rimaz.inventory.InventoryResponse> getInventoryBidirectionalStreamMethod() {
+    io.grpc.MethodDescriptor<com.rimaz.inventory.InventoryRequest, com.rimaz.inventory.InventoryResponse> getInventoryBidirectionalStreamMethod;
+    if ((getInventoryBidirectionalStreamMethod = InventoryServiceGrpc.getInventoryBidirectionalStreamMethod) == null) {
+      synchronized (InventoryServiceGrpc.class) {
+        if ((getInventoryBidirectionalStreamMethod = InventoryServiceGrpc.getInventoryBidirectionalStreamMethod) == null) {
+          InventoryServiceGrpc.getInventoryBidirectionalStreamMethod = getInventoryBidirectionalStreamMethod = 
+              io.grpc.MethodDescriptor.<com.rimaz.inventory.InventoryRequest, com.rimaz.inventory.InventoryResponse>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.BIDI_STREAMING)
+              .setFullMethodName(generateFullMethodName(
+                  "inventory.InventoryService", "InventoryBidirectionalStream"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.rimaz.inventory.InventoryRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.rimaz.inventory.InventoryResponse.getDefaultInstance()))
+                  .setSchemaDescriptor(new InventoryServiceMethodDescriptorSupplier("InventoryBidirectionalStream"))
+                  .build();
+          }
+        }
+     }
+     return getInventoryBidirectionalStreamMethod;
+  }
+
   /**
    * Creates a new async stub that supports all call types for the service
    */
@@ -171,6 +203,13 @@ public final class InventoryServiceGrpc {
       asyncUnimplementedUnaryCall(getInventoryServerStreamMethod(), responseObserver);
     }
 
+    /**
+     */
+    public io.grpc.stub.StreamObserver<com.rimaz.inventory.InventoryRequest> inventoryBidirectionalStream(
+        io.grpc.stub.StreamObserver<com.rimaz.inventory.InventoryResponse> responseObserver) {
+      return asyncUnimplementedStreamingCall(getInventoryBidirectionalStreamMethod(), responseObserver);
+    }
+
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
           .addMethod(
@@ -194,6 +233,13 @@ public final class InventoryServiceGrpc {
                 com.rimaz.inventory.InventoryRequest,
                 com.rimaz.inventory.InventoryResponse>(
                   this, METHODID_INVENTORY_SERVER_STREAM)))
+          .addMethod(
+            getInventoryBidirectionalStreamMethod(),
+            asyncBidiStreamingCall(
+              new MethodHandlers<
+                com.rimaz.inventory.InventoryRequest,
+                com.rimaz.inventory.InventoryResponse>(
+                  this, METHODID_INVENTORY_BIDIRECTIONAL_STREAM)))
           .build();
     }
   }
@@ -238,6 +284,14 @@ public final class InventoryServiceGrpc {
         io.grpc.stub.StreamObserver<com.rimaz.inventory.InventoryResponse> responseObserver) {
       asyncServerStreamingCall(
           getChannel().newCall(getInventoryServerStreamMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     */
+    public io.grpc.stub.StreamObserver<com.rimaz.inventory.InventoryRequest> inventoryBidirectionalStream(
+        io.grpc.stub.StreamObserver<com.rimaz.inventory.InventoryResponse> responseObserver) {
+      return asyncBidiStreamingCall(
+          getChannel().newCall(getInventoryBidirectionalStreamMethod(), getCallOptions()), responseObserver);
     }
   }
 
@@ -305,6 +359,7 @@ public final class InventoryServiceGrpc {
   private static final int METHODID_INVENTORY_UNARY = 0;
   private static final int METHODID_INVENTORY_SERVER_STREAM = 1;
   private static final int METHODID_INVENTORY_CLIENT_STREAM = 2;
+  private static final int METHODID_INVENTORY_BIDIRECTIONAL_STREAM = 3;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -343,6 +398,9 @@ public final class InventoryServiceGrpc {
       switch (methodId) {
         case METHODID_INVENTORY_CLIENT_STREAM:
           return (io.grpc.stub.StreamObserver<Req>) serviceImpl.inventoryClientStream(
+              (io.grpc.stub.StreamObserver<com.rimaz.inventory.InventoryResponse>) responseObserver);
+        case METHODID_INVENTORY_BIDIRECTIONAL_STREAM:
+          return (io.grpc.stub.StreamObserver<Req>) serviceImpl.inventoryBidirectionalStream(
               (io.grpc.stub.StreamObserver<com.rimaz.inventory.InventoryResponse>) responseObserver);
         default:
           throw new AssertionError();
@@ -398,6 +456,7 @@ public final class InventoryServiceGrpc {
               .addMethod(getInventoryUnaryMethod())
               .addMethod(getInventoryClientStreamMethod())
               .addMethod(getInventoryServerStreamMethod())
+              .addMethod(getInventoryBidirectionalStreamMethod())
               .build();
         }
       }
