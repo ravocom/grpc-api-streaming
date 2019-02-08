@@ -37,9 +37,10 @@ public class ClientShopper {
         System.out.println("************ Unary ******************");
 
         InventoryServiceGrpc.InventoryServiceBlockingStub blockingStub = InventoryServiceGrpc.newBlockingStub(channel);
-        System.out.println("Doing unary call");
-        InventoryResponse inventoryResponse = blockingStub.inventoryUnary(InventoryRequest.newBuilder().setFlightId(100).build());
-        System.out.println("Response from Unary allocation=" + inventoryResponse.getAllocation() + ", result " + inventoryResponse.getResult());
+        int flightId=100;
+        System.out.println("Request sent from Client- Unary - FlightId=" + flightId);
+        InventoryResponse inventoryResponse = blockingStub.inventoryUnary(InventoryRequest.newBuilder().setFlightId(flightId).build());
+        System.out.println("Response from Server- Unary - allocation=" + inventoryResponse.getAllocation() + ", result " + inventoryResponse.getResult());
 
     }
 
@@ -55,29 +56,29 @@ public class ClientShopper {
             StreamObserver<InventoryRequest> requestObserver = asynStub.inventoryClientStream(new StreamObserver<InventoryResponse>() {
                 @Override
                 public void onNext(InventoryResponse value) {
-                    System.out.println("Client Received a response" + value.getAllocation() + "Result=" + value.getResult());
+                    System.out.println("Response from Server- ClientStreaming" + value.getAllocation() + "Result=" + value.getResult());
                 }
 
                 @Override
                 public void onError(Throwable t) {
 
-                    System.out.println("Client Received an error" + t);
+                    System.out.println("Response from Server- " + t);
                 }
 
                 @Override
                 public void onCompleted() {
                     latch.countDown();
-                    System.out.println("Client Received a DONE");
+                    System.out.println("Response from Server-Completed ");
                 }
             });
 
-            System.out.println("Sending message 1");
+            System.out.println("Request sent from Client- ClientStreaming - FlightId=" + 100);
             requestObserver.onNext(InventoryRequest.newBuilder().setFlightId(100).build());
 
-            System.out.println("Sending message 2");
+            System.out.println("Request sent from Client- ClientStreaming - FlightId=" + 200);
             requestObserver.onNext(InventoryRequest.newBuilder().setFlightId(200).build());
 
-            System.out.println("Sending message 3");
+            System.out.println("Request sent from Client- ClientStreaming - FlightId=" + 300);
             requestObserver.onNext(InventoryRequest.newBuilder().setFlightId(300).build());
 
             requestObserver.onCompleted();
@@ -93,8 +94,10 @@ public class ClientShopper {
     private void doServerStreaming(ManagedChannel channel) {
         System.out.println("************ Server Streaming ******************");
         InventoryServiceGrpc.InventoryServiceBlockingStub stub = InventoryServiceGrpc.newBlockingStub(channel);
+
+        System.out.println("Request sent from Client- ServerStreaming - FlightId=" + 560);
         stub.inventoryServerStream(InventoryRequest.newBuilder().setFlightId(560).build()).forEachRemaining(inventoryResponse -> {
-            System.out.println("Response Received at client: Allocation=" + inventoryResponse.getAllocation() + ", Result=" + inventoryResponse.getResult());
+            System.out.println("Response Received from Server- ServerStreaming: Allocation=" + inventoryResponse.getAllocation() + ", Result=" + inventoryResponse.getResult());
         });
 
     }
@@ -109,7 +112,7 @@ public class ClientShopper {
         StreamObserver<InventoryRequest> inventoryRequests=   asynStub.inventoryBidirectionalStream(new StreamObserver<InventoryResponse>() {
             @Override
             public void onNext(InventoryResponse value) {
-                System.out.println("Response received from the server: " + value.getResult() + ", Allocation=" + value.getAllocation());
+                System.out.println("Response received from the server:  Bidirectional" + value.getResult() + ", Allocation=" + value.getAllocation());
             }
 
             @Override
@@ -126,6 +129,7 @@ public class ClientShopper {
         });
 
         Arrays.asList(120, 213,234,23,23423,234234,23423,234).forEach(flightId -> {
+            System.out.println("Request sent from Client- Bidirectional Streaming - FlightId=" + flightId);
             inventoryRequests.onNext(InventoryRequest.newBuilder().setFlightId(flightId).build());
         });
 

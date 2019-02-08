@@ -53,7 +53,10 @@ public class ShopperServiceImpl extends InventoryServiceGrpc.InventoryServiceImp
     public void inventoryServerStream(InventoryRequest request, StreamObserver<InventoryResponse> responseObserver) {
         int flightId = request.getFlightId();
 
-        responseObserver.onNext(InventoryResponse.newBuilder().setAllocation(490).setResult("Server Stream").build());
+        for (int i=0; i<10; i++){
+            responseObserver.onNext(InventoryResponse.newBuilder().setAllocation(i).setResult("Server Stream").build());
+        }
+
         responseObserver.onCompleted();
     }
 
